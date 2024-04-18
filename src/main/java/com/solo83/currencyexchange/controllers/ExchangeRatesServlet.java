@@ -9,7 +9,7 @@ import com.solo83.currencyexchange.repository.currencies.CurrencyRepositoryImpl;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRate;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateRepository;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
-import com.solo83.currencyexchange.utils.RecordNotFoundException;
+import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
 import jakarta.servlet.annotation.WebServlet;

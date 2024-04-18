@@ -1,7 +1,7 @@
 package com.solo83.currencyexchange.repository.currencies;
 
 import com.solo83.currencyexchange.repository.DBConnector;
-import com.solo83.currencyexchange.utils.RecordNotFoundException;
+import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 

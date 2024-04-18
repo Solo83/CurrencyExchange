@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.solo83.currencyexchange.repository.currencies.Currency;
-import com.solo83.currencyexchange.utils.RecordNotFoundException;
+import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 

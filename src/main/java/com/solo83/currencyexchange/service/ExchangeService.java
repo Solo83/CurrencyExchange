@@ -8,7 +8,7 @@ import com.solo83.currencyexchange.repository.currencies.Currency;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRate;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateRepository;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
-import com.solo83.currencyexchange.utils.RecordNotFoundException;
+import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

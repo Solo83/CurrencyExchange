@@ -1,6 +1,6 @@
 package com.solo83.currencyexchange.repository.exchangerates;
 
-import com.solo83.currencyexchange.utils.RecordNotFoundException;
+import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
