@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 public class Validator {
 
 
-    public static String requestValueChecker(String parameterName, String value, String regexp) throws IllegalArgumentException {
+    public static String validateParameterValue(String parameterName, String value, String regexp) throws IllegalArgumentException {
 
-        Matcher matcher = regExpChecker(value, regexp);
+        Matcher matcher = validateRegExp(value, regexp);
 
         if (value.trim().isEmpty() || !matcher.find()) {
             throw new IllegalArgumentException("Value '" + value + "' is not valid for parameter '" + parameterName +"'");
@@ -18,9 +18,9 @@ public class Validator {
         return value;
     }
 
-    public static String oneCurrencyGetRequestUrlChecker(String requestURL, String regexp) throws IllegalArgumentException {
+    public static String validateOneCurrencyGetRequestUrl(String requestURL, String regexp) throws IllegalArgumentException {
 
-        Matcher matcher = regExpChecker(requestURL,regexp);
+        Matcher matcher = validateRegExp(requestURL,regexp);
         String currencyCode;
 
         if (matcher.find()) {
@@ -32,9 +32,9 @@ public class Validator {
     }
 
 
-    public static Map<String, String> oneExchangeRateGetRequestPairInUrlChecker(String requestURL) throws IllegalArgumentException {
+    public static Map<String, String> validateOneExchangeRateGetRequestPairInUrl(String requestURL) throws IllegalArgumentException {
 
-        Matcher matcher = regExpChecker(requestURL, "[A-Z]{6}+$");
+        Matcher matcher = validateRegExp(requestURL, "[A-Z]{6}+$");
         Map<String, String> map = new HashMap<>();
 
         if (matcher.find()) {
@@ -53,7 +53,7 @@ public class Validator {
 
     }
 
-    public static void parameterMapValidator (Map<String, String[]> parameterMap,String... args) throws IllegalArgumentException{
+    public static void validateParameterMap(Map<String, String[]> parameterMap, String... args) throws IllegalArgumentException{
 
         for (String arg : args) {
             if (!parameterMap.containsKey(arg)){
@@ -62,7 +62,7 @@ public class Validator {
         }
     }
 
-    private static Matcher regExpChecker(String input, String regex) {
+    private static Matcher validateRegExp(String input, String regex) {
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(input);
     }

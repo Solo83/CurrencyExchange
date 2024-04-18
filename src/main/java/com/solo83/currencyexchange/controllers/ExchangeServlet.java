@@ -35,10 +35,10 @@ public class ExchangeServlet extends HttpServlet {
 
         try {
 
-            Validator.parameterMapValidator(req.getParameterMap(), "from", "to", "amount");
-            String from = Validator.requestValueChecker("from", req.getParameter("from"), "^[A-Z]{3}$");
-            String to = Validator.requestValueChecker("to", req.getParameter("to"), "^[A-Z]{3}$");
-            BigDecimal amount = new BigDecimal(Validator.requestValueChecker("amount", req.getParameter("amount"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
+            Validator.validateParameterMap(req.getParameterMap(), "from", "to", "amount");
+            String from = Validator.validateParameterValue("from", req.getParameter("from"), "^[A-Z]{3}$");
+            String to = Validator.validateParameterValue("to", req.getParameter("to"), "^[A-Z]{3}$");
+            BigDecimal amount = new BigDecimal(Validator.validateParameterValue("amount", req.getParameter("amount"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
 
 
             ExchangeService service = new ExchangeService(mapper);

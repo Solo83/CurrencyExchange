@@ -51,7 +51,7 @@ public class OneExchangeRateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
-            Map<String, String> exchangeRateCodes = Validator.oneExchangeRateGetRequestPairInUrlChecker(req.getRequestURI());
+            Map<String, String> exchangeRateCodes = Validator.validateOneExchangeRateGetRequestPairInUrl(req.getRequestURI());
             String baseCurrencyCode = exchangeRateCodes.get("baseCurrency");
             String targetCurrencyCode = exchangeRateCodes.get("targetCurrency");
             Optional<ExchangeRate> exchangeRateOptional = repository.get(baseCurrencyCode, targetCurrencyCode);
@@ -71,11 +71,11 @@ public class OneExchangeRateServlet extends HttpServlet {
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
-            Map<String, String> exchangeRateCodes = Validator.oneExchangeRateGetRequestPairInUrlChecker(req.getRequestURI());
-            Validator.parameterMapValidator(req.getParameterMap(), "rate");
+            Map<String, String> exchangeRateCodes = Validator.validateOneExchangeRateGetRequestPairInUrl(req.getRequestURI());
+            Validator.validateParameterMap(req.getParameterMap(), "rate");
             String baseCurrencyCode = exchangeRateCodes.get("baseCurrency");
             String targetCurrencyCode = exchangeRateCodes.get("targetCurrency");
-            BigDecimal rate = new BigDecimal(Validator.requestValueChecker("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
+            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
             Optional<ExchangeRate> exchangeRateOptional = repository.update(baseCurrencyCode, targetCurrencyCode, rate);
 
             Writer.printMessage(resp, mapper, exchangeRateOptional.orElse(null));

@@ -55,10 +55,10 @@ public class ExchangeRatesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
-            Validator.parameterMapValidator(req.getParameterMap(), "baseCurrencyCode", "targetCurrencyCode", "rate");
-            String baseCurrencyCode = Validator.requestValueChecker("baseCurrencyCode", req.getParameter("baseCurrencyCode"), "^[A-Z]{3}$");
-            String targetCurrencyCode = Validator.requestValueChecker("targetCurrencyCode", req.getParameter("targetCurrencyCode"), "^[A-Z]{3}$");
-            BigDecimal rate = new BigDecimal(Validator.requestValueChecker("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
+            Validator.validateParameterMap(req.getParameterMap(), "baseCurrencyCode", "targetCurrencyCode", "rate");
+            String baseCurrencyCode = Validator.validateParameterValue("baseCurrencyCode", req.getParameter("baseCurrencyCode"), "^[A-Z]{3}$");
+            String targetCurrencyCode = Validator.validateParameterValue("targetCurrencyCode", req.getParameter("targetCurrencyCode"), "^[A-Z]{3}$");
+            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
 
             Optional<Currency> baseCurrencyOptional = currencyRepository.get(baseCurrencyCode);
             Optional<Currency> targetCurrencyOptional = currencyRepository.get(targetCurrencyCode);
