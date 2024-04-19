@@ -8,9 +8,9 @@ public class ExchangeDTO {
 
     private Currency baseCurrency;
     private Currency targetCurrency;
-    BigDecimal rate;
-    BigDecimal amount;
-    BigDecimal convertedAmount;
+    private BigDecimal rate;
+    private BigDecimal amount;
+    private BigDecimal convertedAmount;
 
     public ExchangeDTO(Currency baseCurrency, Currency targetCurrency, BigDecimal rate, BigDecimal amount, BigDecimal convertedAmount) {
         this.baseCurrency = baseCurrency;

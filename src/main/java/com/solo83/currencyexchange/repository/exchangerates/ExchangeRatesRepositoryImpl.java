@@ -21,13 +21,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository {
 
         List<ExchangeRate> exchangeRates = new ArrayList<>();
 
-        String sql = "SELECT ExchangeRates.id,\n" +
-                "       C1.id,C1.FullName,C1.Code,C1.Sign,\n" +
-                "       C2.id,C2.FullName,C2.Code,C2.Sign,\n" +
-                "       ExchangeRates.rate\n" +
-                "from ExchangeRates\n" +
-                "    join main.Currencies C1 on C1.ID = ExchangeRates.BaseCurrencyId\n" +
-                "    join main.Currencies C2 on C2.ID = ExchangeRates.TargetCurrencyId";
+        String sql = "SELECT ExchangeRates.id, C1.id,C1.FullName,C1.Code,C1.Sign,C2.id,C2.FullName,C2.Code,C2.Sign,ExchangeRates.rate from ExchangeRates join main.Currencies C1 on C1.ID = ExchangeRates.BaseCurrencyId join main.Currencies C2 on C2.ID = ExchangeRates.TargetCurrencyId";
 
         try (Connection connection = DBConnector.getConnection();
              Statement statement = connection.createStatement();
@@ -47,16 +41,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository {
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement statement = connection
-                     .prepareStatement("select ExchangeRates.id,\n" +
-                             "       C1.id,C1.FullName,C1.code,C1.sign,\n" +
-                             "       C2.id,C2.FullName,C2.code,C2.sign,\n" +
-                             "       Rate\n" +
-                             "from ExchangeRates\n" +
-                             "    join  Currencies C1 on C1.id = ExchangeRates.BaseCurrencyId\n" +
-                             "    join  Currencies C2 on C2.id = ExchangeRates.TargetCurrencyId\n" +
-                             "where\n" +
-                             "    C1.Code = ? and C2.Code = ?")) {
-
+                     .prepareStatement("select ExchangeRates.id,C1.id,C1.FullName,C1.code,C1.sign,C2.id,C2.FullName,C2.code,C2.sign,Rate from ExchangeRates join  Currencies C1 on C1.id = ExchangeRates.BaseCurrencyId join  Currencies C2 on C2.id = ExchangeRates.TargetCurrencyId where C1.Code = ? and C2.Code = ?")) {
             statement.setString(1, baseCode);
             statement.setString(2, targetCode);
 
@@ -77,14 +62,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository {
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement statement = connection
-                     .prepareStatement("UPDATE ExchangeRates\n" +
-                             "    SET Rate = ?\n" +
-                             "    WHERE exists(select 1 from Currencies C1\n" +
-                             "                 where C1.ID = ExchangeRates.BaseCurrencyId\n" +
-                             "                 and Code = ?)\n" +
-                             "    AND exists(select 1 from Currencies C2\n" +
-                             "               where C2.ID = ExchangeRates.TargetCurrencyId\n" +
-                             "               and Code = ? );")) {
+                     .prepareStatement("UPDATE ExchangeRates SET Rate = ? WHERE exists(select 1 from Currencies C1 where C1.ID = ExchangeRates.BaseCurrencyId and Code = ?) AND exists(select 1 from Currencies C2 where C2.ID = ExchangeRates.TargetCurrencyId and Code = ? )")) {
 
             statement.setBigDecimal(1, rate);
             statement.setString(2, baseCode);
@@ -110,10 +88,7 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository {
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement statement = connection
-                     .prepareStatement("INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId,Rate) VALUES\n" +
-                             "   ((SELECT id from Currencies WHERE Code=?) ,\n" +
-                             "    (SELECT id from Currencies WHERE Code=? ) ,\n" +
-                             "    ?) ")) {
+                     .prepareStatement("INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId,Rate) VALUES ((SELECT id from Currencies WHERE Code=?),  (SELECT id from Currencies WHERE Code=? ) , ?) ")) {
 
             statement.setString(1, entity.getBaseCurrency().getCode());
             statement.setString(2, entity.getTargetCurrency().getCode());
