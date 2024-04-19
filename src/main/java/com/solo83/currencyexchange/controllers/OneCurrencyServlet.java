@@ -34,7 +34,7 @@ public class OneCurrencyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
-            String currencyCode = Validator.validateOneCurrencyGetRequestUrl(req.getRequestURI(), "[A-Z]{3}$");
+            String currencyCode = Validator.validateOneCurrencyGetRequestUrl(req.getRequestURI(), Validator.PATTERN_CURRENCY_CODE_IN_URL);
             Optional<Currency> currencyOptional = repository.get(currencyCode);
             if (currencyOptional.isPresent()) {
                 Writer.printMessage(resp, mapper, currencyOptional.get());
@@ -49,14 +49,15 @@ public class OneCurrencyServlet extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
             Validator.validateParameterMap(req.getParameterMap(), "code", "fullname", "sign");
-            String code = Validator.validateParameterValue("code", req.getParameter("code"), "^[A-Z]{3}$");
-            String fullName = Validator.validateParameterValue("fullname", req.getParameter("fullname"), "(\\w+\\s+\\w+)");
-            String sign = Validator.validateParameterValue("sign", req.getParameter("sign"), "\\p{Sc}");
+            String code = Validator.validateParameterValue("code", req.getParameter("code"), Validator.PATTERN_CURRENCY_CODE);
+            String fullName = Validator.validateParameterValue("fullname", req.getParameter("fullname"),Validator.PATTERN_CURRENCY_FULLNAME);
+            String sign = Validator.validateParameterValue("sign", req.getParameter("sign"), Validator.PATTERN_CURRENCY_SIGN);
 
             Optional<Currency> currencyOptional = repository.create(new Currency(fullName, code, sign));
 

@@ -7,6 +7,15 @@ import java.util.regex.Pattern;
 
 public class Validator {
 
+    final public static String PATTERN_CURRENCY_CODE = "^[A-Z]{3}$";
+    final public static String PATTERN_CURRENCY_SIGN = "\\p{Sc}";
+    final public static String PATTERN_CURRENCY_FULLNAME = "(\\w+\\s+\\w+)";
+    final public static String PATTERN_CURRENCY_CODE_IN_URL = "[A-Z]{3}$";
+    final public static String PATTERN_BIGDECIMAL_RATE = "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)";
+
+
+
+
 
     public static String validateParameterValue(String parameterName, String value, String regexp) throws IllegalArgumentException {
 

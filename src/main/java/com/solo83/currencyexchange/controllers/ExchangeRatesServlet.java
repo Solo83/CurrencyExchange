@@ -55,9 +55,9 @@ public class ExchangeRatesServlet extends HttpServlet {
 
         try {
             Validator.validateParameterMap(req.getParameterMap(), "baseCurrencyCode", "targetCurrencyCode", "rate");
-            String baseCurrencyCode = Validator.validateParameterValue("baseCurrencyCode", req.getParameter("baseCurrencyCode"), "^[A-Z]{3}$");
-            String targetCurrencyCode = Validator.validateParameterValue("targetCurrencyCode", req.getParameter("targetCurrencyCode"), "^[A-Z]{3}$");
-            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
+            String baseCurrencyCode = Validator.validateParameterValue("baseCurrencyCode", req.getParameter("baseCurrencyCode"), Validator.PATTERN_CURRENCY_CODE);
+            String targetCurrencyCode = Validator.validateParameterValue("targetCurrencyCode", req.getParameter("targetCurrencyCode"), Validator.PATTERN_CURRENCY_CODE);
+            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), Validator.PATTERN_BIGDECIMAL_RATE));
 
             Optional<Currency> baseCurrencyOptional = currencyRepository.get(baseCurrencyCode);
             Optional<Currency> targetCurrencyOptional = currencyRepository.get(targetCurrencyCode);

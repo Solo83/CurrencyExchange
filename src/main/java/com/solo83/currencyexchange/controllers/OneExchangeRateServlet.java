@@ -78,7 +78,7 @@ public class OneExchangeRateServlet extends HttpServlet {
             Validator.validateParameterMap(req.getParameterMap(), "rate");
             String baseCurrencyCode = exchangeRateCodes.get("baseCurrency");
             String targetCurrencyCode = exchangeRateCodes.get("targetCurrency");
-            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
+            BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), Validator.PATTERN_BIGDECIMAL_RATE));
             Optional<ExchangeRate> exchangeRateOptional = repository.update(baseCurrencyCode, targetCurrencyCode, rate);
 
             if (exchangeRateOptional.isPresent()) {
