@@ -1,8 +1,9 @@
 package com.solo83.currencyexchange.repository.currencies;
 
 import com.solo83.currencyexchange.repository.DBConnector;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
+import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
-import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 
 import java.sql.*;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
 
     @Override
-    public List<Currency> getAll() throws SQLException {
+    public List<Currency> getAll() throws CustomDbException {
 
         List<Currency> currencies = new ArrayList<>();
         String sql = "SELECT * FROM Currencies";
@@ -26,13 +27,13 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
                 currencies.add(createCurrency(resultSet));
             }
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
+            throw new CustomDbException(e.getMessage());
         }
         return currencies;
     }
 
     @Override
-    public Optional<Currency> get(String code) throws SQLException, RecordNotFoundException {
+    public Optional<Currency> get(String code) throws RecordNotFoundException, CustomDbException {
 
         Optional<Currency> currency = Optional.empty();
 
@@ -49,7 +50,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
             }
 
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
+            throw new CustomDbException(e.getMessage());
         }
 
         if (currency.isEmpty()) {
@@ -60,7 +61,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
     }
 
     @Override
-    public Optional<Currency> create(Currency entity) throws SQLException {
+    public Optional<Currency> create(Currency entity) throws RecordAlreadyExistException, CustomDbException {
 
         Optional<Currency> currency = Optional.empty();
 
@@ -81,10 +82,12 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
 
         } catch (SQLiteException | RecordNotFoundException e) {
             if (e.getMessage().contains("UNIQUE constraint failed")) {
-                throw new SQLiteException("Currency '" + entity.getCode() + "' is already exist in Database", SQLiteErrorCode.SQLITE_CONSTRAINT);
+                throw new RecordAlreadyExistException("Currency '" + entity.getCode() + "' is already exist in Database");
             } else {
-                throw new SQLException(e.getMessage());
+                throw new CustomDbException(e.getMessage());
             }
+        } catch (SQLException e) {
+            throw new CustomDbException(e.getMessage());
         }
         return currency;
     }

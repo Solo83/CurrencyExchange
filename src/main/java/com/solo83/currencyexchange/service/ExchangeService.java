@@ -8,11 +8,11 @@ import com.solo83.currencyexchange.repository.currencies.Currency;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRate;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateRepository;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class ExchangeService {
@@ -24,7 +24,7 @@ public class ExchangeService {
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
-    public Optional<ObjectNode> exchange(String from, String to, BigDecimal amount) throws SQLException, RecordNotFoundException {
+    public Optional<ObjectNode> exchange(String from, String to, BigDecimal amount) throws CustomDbException,RecordNotFoundException {
         ExchangeRateRepository<ExchangeRate> repository = new ExchangeRatesRepositoryImpl();
         Optional<ExchangeRate> exchangeRate = Optional.empty();
         try {

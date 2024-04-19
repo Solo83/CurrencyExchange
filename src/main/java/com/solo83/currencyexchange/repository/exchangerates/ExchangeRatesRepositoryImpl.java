@@ -7,8 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.solo83.currencyexchange.repository.currencies.Currency;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
+import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
-import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<ExchangeRate> {
     @Override
-    public List<ExchangeRate> getAll() throws SQLException {
+    public List<ExchangeRate> getAll() throws CustomDbException {
 
         List<ExchangeRate> exchangeRates = new ArrayList<>();
 
@@ -36,13 +37,13 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<Excha
                 exchangeRates.add(createExchangeRate(resultSet));
             }
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
+            throw new CustomDbException(e.getMessage());
         }
         return exchangeRates;
     }
 
     @Override
-    public Optional<ExchangeRate> get(String baseCode, String targetCode) throws SQLException, RecordNotFoundException {
+    public Optional<ExchangeRate> get(String baseCode, String targetCode) throws RecordNotFoundException, CustomDbException {
         Optional<ExchangeRate> exchangeRate;
 
         try (Connection connection = DBConnector.getConnection();
@@ -68,13 +69,13 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<Excha
                 }
             }
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
+            throw new CustomDbException(e.getMessage());
         }
         return exchangeRate;
     }
 
     @Override
-    public Optional<ExchangeRate> update(String baseCode, String targetCode, BigDecimal rate) throws SQLException, RecordNotFoundException {
+    public Optional<ExchangeRate> update(String baseCode, String targetCode, BigDecimal rate) throws RecordNotFoundException, CustomDbException {
         Optional<ExchangeRate> exchangeRate;
 
         try (Connection connection = DBConnector.getConnection();
@@ -100,14 +101,14 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<Excha
             }
 
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
+            throw new CustomDbException(e.getMessage());
         }
 
         return exchangeRate;
     }
 
     @Override
-    public Optional<ExchangeRate> create(ExchangeRate entity) throws SQLException {
+    public Optional<ExchangeRate> create(ExchangeRate entity) throws CustomDbException, RecordAlreadyExistException {
         Optional<ExchangeRate> exchangeRate = Optional.empty();
 
         try (Connection connection = DBConnector.getConnection();
@@ -130,10 +131,12 @@ public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<Excha
 
         } catch (SQLiteException | RecordNotFoundException e) {
             if (e.getMessage().contains("UNIQUE constraint failed")) {
-                throw new SQLiteException("Pair '" + entity.getBaseCurrency().getCode() + entity.getTargetCurrency().getCode() + "' is already exist in Database", SQLiteErrorCode.SQLITE_CONSTRAINT);
+                throw new RecordAlreadyExistException("Pair '" + entity.getBaseCurrency().getCode() + entity.getTargetCurrency().getCode() + "' is already exist in Database");
             } else {
-                throw new SQLException(e.getMessage());
+                throw new CustomDbException(e.getMessage());
             }
+        } catch (SQLException e) {
+            throw new CustomDbException(e.getMessage());
         }
         return exchangeRate;
     }

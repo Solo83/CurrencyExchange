@@ -5,13 +5,13 @@ import com.solo83.currencyexchange.repository.currencies.CurrencyRepository;
 import com.solo83.currencyexchange.repository.currencies.CurrencyRepositoryImpl;
 import com.solo83.currencyexchange.repository.currencies.Currency;
 import com.solo83.currencyexchange.utils.Writer;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name = "currenciesServlet", value = "/currencies")
@@ -32,7 +32,7 @@ public class CurrenciesServlet extends HttpServlet {
             List<Currency> allCurrencies = repository.getAll();
             Writer.printMessage(resp, mapper, allCurrencies);
 
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 

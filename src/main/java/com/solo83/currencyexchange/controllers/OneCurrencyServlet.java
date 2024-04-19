@@ -5,6 +5,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.solo83.currencyexchange.repository.currencies.CurrencyRepository;
 import com.solo83.currencyexchange.repository.currencies.CurrencyRepositoryImpl;
 import com.solo83.currencyexchange.repository.currencies.Currency;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
+import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
@@ -12,10 +14,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.sqlite.SQLiteException;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 
 
@@ -39,7 +39,7 @@ public class OneCurrencyServlet extends HttpServlet {
             Optional<Currency> currentCurrency = repository.get(currencyCode);
             Writer.printMessage(resp, mapper, currentCurrency);
 
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (RecordNotFoundException e) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
@@ -58,11 +58,12 @@ public class OneCurrencyServlet extends HttpServlet {
             String sign = Validator.validateParameterValue("sign", req.getParameter("sign"), "\\p{Sc}");
 
             Optional<Currency> currencyOptional = repository.create(new Currency(fullName, code, sign));
+            resp.setStatus(201);
             Writer.printMessage(resp, mapper, currencyOptional.orElse(null));
 
-        } catch (SQLiteException e) {
+        } catch (RecordAlreadyExistException e) {
             resp.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

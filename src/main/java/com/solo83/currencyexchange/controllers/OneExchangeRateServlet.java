@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRate;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateRepository;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
@@ -16,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,7 +58,7 @@ public class OneExchangeRateServlet extends HttpServlet {
 
             Writer.printMessage(resp, mapper, exchangeRateOptional.orElse(null));
 
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -80,7 +80,7 @@ public class OneExchangeRateServlet extends HttpServlet {
 
             Writer.printMessage(resp, mapper, exchangeRateOptional.orElse(null));
 
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

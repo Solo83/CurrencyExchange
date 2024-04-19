@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.solo83.currencyexchange.service.ExchangeService;
+import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
@@ -12,11 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.sqlite.SQLiteException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Optional;
 
 @WebServlet(name = "exchangeServlet", value = "/exchange")
@@ -46,9 +45,7 @@ public class ExchangeServlet extends HttpServlet {
 
             Writer.printMessage(resp, mapper, exchange.orElse(null));
 
-        } catch (SQLiteException e) {
-            resp.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
-        } catch (SQLException | IOException e) {
+        } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
