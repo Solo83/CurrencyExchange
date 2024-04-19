@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
+public class CurrencyRepositoryImpl implements CurrencyRepository {
 
     @Override
     public List<Currency> getAll() throws CustomDbException {

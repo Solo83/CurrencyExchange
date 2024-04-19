@@ -27,7 +27,7 @@ import java.util.Optional;
 public class ExchangeRatesServlet extends HttpServlet {
     private ObjectMapper mapper;
     private ExchangeRateRepository<ExchangeRate> exchangeRateRepository;
-    private CurrencyRepository<Currency> currencyRepository;
+    private CurrencyRepository currencyRepository;
 
     @Override
     public void init() {

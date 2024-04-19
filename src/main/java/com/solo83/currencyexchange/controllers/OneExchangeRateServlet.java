@@ -41,8 +41,10 @@ public class OneExchangeRateServlet extends HttpServlet {
         switch (method) {
             case "GET":
                 this.doGet(req, resp);
+                break;
             case "PATCH":
                 this.doPatch(req, resp);
+                break;
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 @WebServlet(name = "currenciesServlet", value = "/currencies")
 public class CurrenciesServlet extends HttpServlet {
     private ObjectMapper mapper;
-    private CurrencyRepository<Currency> repository;
+    private CurrencyRepository repository;
 
     @Override
     public void init() {

@@ -21,7 +21,7 @@ import java.util.Optional;
 @WebServlet(name = "oneCurrencyServlet", value = "/currency/*")
 public class OneCurrencyServlet extends HttpServlet {
     private ObjectMapper mapper;
-    private CurrencyRepository<Currency> repository;
+    private CurrencyRepository repository;
 
     @Override
     public void init() {
@@ -35,9 +35,9 @@ public class OneCurrencyServlet extends HttpServlet {
 
         try {
             String currencyCode = Validator.validateOneCurrencyGetRequestUrl(req.getRequestURI(), "[A-Z]{3}$");
-            Optional<Currency> currentCurrency = repository.get(currencyCode);
-            if (currentCurrency.isPresent()) {
-                Writer.printMessage(resp, mapper, currentCurrency.get());
+            Optional<Currency> currencyOptional = repository.get(currencyCode);
+            if (currencyOptional.isPresent()) {
+                Writer.printMessage(resp, mapper, currencyOptional.get());
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Currency '" + currencyCode + "' is not found in database");
             }
