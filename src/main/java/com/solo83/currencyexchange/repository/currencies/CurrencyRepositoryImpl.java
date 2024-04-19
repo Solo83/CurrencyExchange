@@ -3,7 +3,6 @@ package com.solo83.currencyexchange.repository.currencies;
 import com.solo83.currencyexchange.repository.DBConnector;
 import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
-import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import org.sqlite.SQLiteException;
 
 import java.sql.*;
@@ -33,7 +32,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
     }
 
     @Override
-    public Optional<Currency> get(String code) throws RecordNotFoundException, CustomDbException {
+    public Optional<Currency> get(String code) throws CustomDbException {
 
         Optional<Currency> currency = Optional.empty();
 
@@ -48,13 +47,8 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
                     currency = Optional.of(createCurrency(resultSet));
                 }
             }
-
         } catch (SQLException e) {
             throw new CustomDbException(e.getMessage());
-        }
-
-        if (currency.isEmpty()) {
-            throw new RecordNotFoundException("Currency '" + code + "' is not found in database");
         }
 
         return currency;
@@ -80,7 +74,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository<Currency> {
                 }
             }
 
-        } catch (SQLiteException | RecordNotFoundException e) {
+        } catch (SQLiteException e) {
             if (e.getMessage().contains("UNIQUE constraint failed")) {
                 throw new RecordAlreadyExistException("Currency '" + entity.getCode() + "' is already exist in Database");
             } else {

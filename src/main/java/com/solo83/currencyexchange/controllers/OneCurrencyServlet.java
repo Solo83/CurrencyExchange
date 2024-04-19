@@ -7,7 +7,6 @@ import com.solo83.currencyexchange.repository.currencies.CurrencyRepositoryImpl;
 import com.solo83.currencyexchange.repository.currencies.Currency;
 import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
-import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,12 +36,14 @@ public class OneCurrencyServlet extends HttpServlet {
         try {
             String currencyCode = Validator.validateOneCurrencyGetRequestUrl(req.getRequestURI(), "[A-Z]{3}$");
             Optional<Currency> currentCurrency = repository.get(currencyCode);
-            Writer.printMessage(resp, mapper, currentCurrency);
+            if (currentCurrency.isPresent()) {
+                Writer.printMessage(resp, mapper, currentCurrency.get());
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Currency '" + currencyCode + "' is not found in database");
+            }
 
         } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        } catch (RecordNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
@@ -58,8 +59,13 @@ public class OneCurrencyServlet extends HttpServlet {
             String sign = Validator.validateParameterValue("sign", req.getParameter("sign"), "\\p{Sc}");
 
             Optional<Currency> currencyOptional = repository.create(new Currency(fullName, code, sign));
-            resp.setStatus(201);
-            Writer.printMessage(resp, mapper, currencyOptional.orElse(null));
+
+            if (currencyOptional.isPresent()) {
+                resp.setStatus(201);
+                Writer.printMessage(resp, mapper, currencyOptional.get());
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Currency '" + code + "' is not found in database");
+            }
 
         } catch (RecordAlreadyExistException e) {
             resp.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
@@ -67,8 +73,6 @@ public class OneCurrencyServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RecordNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
     }
 

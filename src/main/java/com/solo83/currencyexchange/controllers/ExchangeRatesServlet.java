@@ -11,7 +11,6 @@ import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateReposito
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
 import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
 import com.solo83.currencyexchange.utils.exceptions.RecordAlreadyExistException;
-import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
 import jakarta.servlet.annotation.WebServlet;
@@ -62,18 +61,23 @@ public class ExchangeRatesServlet extends HttpServlet {
 
             Optional<Currency> baseCurrencyOptional = currencyRepository.get(baseCurrencyCode);
             Optional<Currency> targetCurrencyOptional = currencyRepository.get(targetCurrencyCode);
+            Optional<ExchangeRate> exchangeRate = Optional.empty();
 
             if (baseCurrencyOptional.isPresent() && targetCurrencyOptional.isPresent()) {
-            Optional<ExchangeRate> exchangeRate = exchangeRateRepository.create(new ExchangeRate(baseCurrencyOptional.get(), targetCurrencyOptional.get(), rate));
-            resp.setStatus(201);
-            Writer.printMessage(resp, mapper, exchangeRate.orElse(null));}
+                exchangeRate = exchangeRateRepository.create(new ExchangeRate(baseCurrencyOptional.get(), targetCurrencyOptional.get(), rate));
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "One (or both) currencies from the pair does not exist in the Database");
+            }
+
+            if (exchangeRate.isPresent()) {
+                resp.setStatus(201);
+                Writer.printMessage(resp, mapper, exchangeRate.get());
+            }
 
         } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RecordNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (RecordAlreadyExistException e) {
             resp.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
         }

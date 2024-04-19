@@ -7,7 +7,6 @@ import com.solo83.currencyexchange.repository.exchangerates.ExchangeRate;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRateRepository;
 import com.solo83.currencyexchange.repository.exchangerates.ExchangeRatesRepositoryImpl;
 import com.solo83.currencyexchange.utils.exceptions.CustomDbException;
-import com.solo83.currencyexchange.utils.exceptions.RecordNotFoundException;
 import com.solo83.currencyexchange.utils.Validator;
 import com.solo83.currencyexchange.utils.Writer;
 import jakarta.servlet.annotation.WebServlet;
@@ -56,14 +55,16 @@ public class OneExchangeRateServlet extends HttpServlet {
             String targetCurrencyCode = exchangeRateCodes.get("targetCurrency");
             Optional<ExchangeRate> exchangeRateOptional = repository.get(baseCurrencyCode, targetCurrencyCode);
 
-            Writer.printMessage(resp, mapper, exchangeRateOptional.orElse(null));
+            if (exchangeRateOptional.isPresent()) {
+                Writer.printMessage(resp, mapper, exchangeRateOptional.get());
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Exchange rate for pair '" + baseCurrencyCode + targetCurrencyCode + "' not found in Database");
+            }
 
         } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RecordNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
 
     }
@@ -78,14 +79,16 @@ public class OneExchangeRateServlet extends HttpServlet {
             BigDecimal rate = new BigDecimal(Validator.validateParameterValue("rate", req.getParameter("rate"), "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)"));
             Optional<ExchangeRate> exchangeRateOptional = repository.update(baseCurrencyCode, targetCurrencyCode, rate);
 
-            Writer.printMessage(resp, mapper, exchangeRateOptional.orElse(null));
+            if (exchangeRateOptional.isPresent()) {
+                Writer.printMessage(resp, mapper, exchangeRateOptional.get());
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Exchange rate for pair '" + baseCurrencyCode + targetCurrencyCode + "' not found in Database");
+            }
 
         } catch (CustomDbException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RecordNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
 
     }
