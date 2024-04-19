@@ -26,7 +26,7 @@ import java.util.Optional;
 @WebServlet(name = "exchangeRatesServlet", value = "/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
     private ObjectMapper mapper;
-    private ExchangeRateRepository<ExchangeRate> exchangeRateRepository;
+    private ExchangeRateRepository exchangeRateRepository;
     private CurrencyRepository currencyRepository;
 
     @Override

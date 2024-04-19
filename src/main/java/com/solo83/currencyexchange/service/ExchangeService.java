@@ -12,7 +12,7 @@ import java.util.Optional;
 public class ExchangeService {
 
     public Optional<ExchangeDTO> exchange(String from, String to, BigDecimal amount) throws CustomDbException {
-        ExchangeRateRepository<ExchangeRate> repository = new ExchangeRatesRepositoryImpl();
+        ExchangeRateRepository repository = new ExchangeRatesRepositoryImpl();
 
         Optional<ExchangeRate> exchangeRate = repository.get(from, to);
         ExchangeDTO exchangeDTO;

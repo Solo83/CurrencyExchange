@@ -23,7 +23,7 @@ import java.util.Optional;
 public class OneExchangeRateServlet extends HttpServlet {
 
     private ObjectMapper mapper;
-    private ExchangeRateRepository<ExchangeRate> repository;
+    private ExchangeRateRepository repository;
 
     @Override
     public void init() {

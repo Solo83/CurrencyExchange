@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository<ExchangeRate> {
+public class ExchangeRatesRepositoryImpl implements ExchangeRateRepository {
     @Override
     public List<ExchangeRate> getAll() throws CustomDbException {
 
