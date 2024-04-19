@@ -14,22 +14,19 @@ public class Validator {
     final public static String PATTERN_BIGDECIMAL_RATE = "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)";
 
 
-
-
-
     public static String validateParameterValue(String parameterName, String value, String regexp) throws IllegalArgumentException {
 
         Matcher matcher = validateRegExp(value, regexp);
 
         if (value.trim().isEmpty() || !matcher.find()) {
-            throw new IllegalArgumentException("Value '" + value + "' is not valid for parameter '" + parameterName +"'");
+            throw new IllegalArgumentException("Value '" + value + "' is not valid for parameter '" + parameterName + "'");
         }
         return value;
     }
 
     public static String validateOneCurrencyGetRequestUrl(String requestURL, String regexp) throws IllegalArgumentException {
 
-        Matcher matcher = validateRegExp(requestURL,regexp);
+        Matcher matcher = validateRegExp(requestURL, regexp);
         String currencyCode;
 
         if (matcher.find()) {
@@ -62,10 +59,10 @@ public class Validator {
 
     }
 
-    public static void validateParameterMap(Map<String, String[]> parameterMap, String... args) throws IllegalArgumentException{
+    public static void validateParameterMap(Map<String, String[]> parameterMap, String... args) throws IllegalArgumentException {
 
         for (String arg : args) {
-            if (!parameterMap.containsKey(arg)){
+            if (!parameterMap.containsKey(arg)) {
                 throw new IllegalArgumentException("Required parameter '" + arg + "' is missing");
             }
         }
